@@ -95,6 +95,35 @@ app.post('/api/books', (req, res) => {
   );
 });
 
+app.post('/api/books/update', (req, res) => {
+  const bookId = req.query.id;
+  const isFavourite = req.query.isFavourite;
+  const isRead = req.query.isRead;
+  let query = ""
+  if (bookId) {
+    query += "UPDATE books"
+    if (isFavourite && isRead) {
+      query += " SET isFavourite = 1, isRead = 1"
+    } else if ( isFavourite ) {
+      query += " SET isFavourite = 1, isRead = 0"
+    } else if ( isRead ) {
+      query += " SET isFavourite = 0, isRead = 1"
+    } else {
+      query += " SET isFavourite = 0, isRead = 0"
+    }
+    query += " WHERE id="+bookId
+  }
+  connection.query(query,
+    (err, result) => {
+      if (err) {
+        res.status(500).send('Book not updated - '+req.params.id+' '+err);
+      } else {
+        res.status(201).send('Book successfully updated');
+      }
+    }
+  );
+});
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
