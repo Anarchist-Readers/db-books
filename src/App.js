@@ -33,7 +33,16 @@ app.use(function (req, res, next) {
   next();
 });
 app.get('/api/books', (req, res) => {
-  connection.query('SELECT * FROM books', (err, result) => {
+  const isFavourite = req.params.isFavourite;
+  const isRead = req.params.isRead;
+  let filter = ""
+  if (isFavourite) {
+    filter = " WHERE isFavourite"
+  }
+  if (isRead) {
+    filter = " WHERE isRead"
+  }
+  connection.query('SELECT * FROM books'+filter, (err, result) => {
     if (err) {
       res.status(500).send('Error retrieving data from database');
     } else {
@@ -55,6 +64,22 @@ app.get('/api/books/:id', (req, res) => {
     }
   });
 });
+
+app.get('/api/search', (req, res) => {
+  const query = req.params.query;
+  let filter = ""
+  if (query) {
+    filter = " WHERE title Like '%"+query+"%'"
+  }
+  connection.query('SELECT * FROM books'+filter, (err, result) => {
+    if (err) {
+      res.status(500).send('Error retrieving data from database');
+    } else {
+      res.json(result);
+    }
+  });
+});
+
 app.post('/api/books', (req, res) => {
   const { title, year, author, genre, cover_url, rating, pdf_url, description} = req.body;
   connection.query(
