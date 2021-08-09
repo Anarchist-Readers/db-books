@@ -32,7 +32,7 @@ app.get('/api/books', (req, res) => {
   }
   connection.query('SELECT * FROM books'+filter, (err, result) => {
     if (err) {
-      res.status(500).send('Error retrieving data from database');
+      res.status(500).send('Error retrieving data from database details: '+err);
     } else {
       res.json(result);
     }
@@ -46,7 +46,7 @@ app.get('/api/books/:id', (req, res) => {
   }
   connection.query('SELECT * FROM books'+filter, (err, result) => {
     if (err) {
-      res.status(500).send('Error retrieving data from database');
+      res.status(500).send('Error retrieving data from database details: '+err);
     } else {
       res.json(result);
     }
@@ -61,7 +61,7 @@ app.get('/api/search', (req, res) => {
   }
   connection.query('SELECT * FROM books'+filter, (err, result) => {
     if (err) {
-      res.status(500).send('Error retrieving data from database');
+      res.status(500).send('Error retrieving data from database. details: '+err);
     } else {
       res.json(result);
     }
